@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t edgl/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true edgl/react-test npm test
+
+after_success:
+  - docker build -t edgl/docker-react-multi-container-client ./client
+  - docker build -t edgl/docker-react-multi-container-nginx ./nginx
+  - docker build -t edgl/docker-react-multi-container-server ./server
+  - docker build -t edgl/docker-react-multi-container-worker ./worker
+
+  # login to docker cli
+  - docker login -u "$DOCKER_ID" -p "$DOCKER_PASSWORD"
+  # push to docker
+  - docker push edgl/docker-react-multi-container-client
+  - docker push edgl/docker-react-multi-container-nginx
+  - docker push edgl/docker-react-multi-container-server
+  - docker push edgl/docker-react-multi-container-worker
