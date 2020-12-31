@@ -21,3 +21,15 @@ after_success:
   - docker push edgl/docker-react-multi-container-nginx
   - docker push edgl/docker-react-multi-container-server
   - docker push edgl/docker-react-multi-container-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-1'
+  app: 'docker-multi-container'
+  env: 'DockerMultiContainer-env-1'
+  bucket_name: 'elasticbeanstalk-us-east-1-103969041755'
+  bucket_path: 'docker-multi'
+  on:
+    branch: 'master'
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
